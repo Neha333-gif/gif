@@ -37,7 +37,8 @@ class _QuotePageState extends State<QuotePage> {
   final TextEditingController searchController = TextEditingController();
 
   // ⚠️ For local testing use localhost, but for web builds replace with a hosted API
-  String baseUrl = "https://quotes-backend.onrender.com";
+  String baseUrl = "https://quotes-backend-cqzs.onrender.com";
+
 
   Future<void> generateQuotes() async {
     setState(() => isLoading = true);
