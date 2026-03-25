@@ -23,7 +23,7 @@ class FrontPage extends StatelessWidget {
   }
 }
 
-/// Quote generator and search page
+/// Quote generator page (search removed)
 class QuotePage extends StatefulWidget {
   @override
   _QuotePageState createState() => _QuotePageState();
@@ -34,11 +34,8 @@ class _QuotePageState extends State<QuotePage> {
   List quotes = [];
   bool isLoading = false;
 
-  final TextEditingController searchController = TextEditingController();
-
   // ⚠️ For local testing use localhost, but for web builds replace with a hosted API
   String baseUrl = "https://quotes-backend-cqzs.onrender.com";
-
 
   Future<void> generateQuotes() async {
     setState(() => isLoading = true);
@@ -56,6 +53,8 @@ class _QuotePageState extends State<QuotePage> {
     setState(() => isLoading = false);
   }
 
+  /*
+  // ❌ Search method commented out
   Future<void> searchQuotes() async {
     setState(() => isLoading = true);
     try {
@@ -71,6 +70,7 @@ class _QuotePageState extends State<QuotePage> {
     }
     setState(() => isLoading = false);
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +97,9 @@ class _QuotePageState extends State<QuotePage> {
               child: Text("Generate Quotes"),
             ),
             SizedBox(height: 20),
+
+            // ❌ Search UI commented out
+            /*
             TextField(
               controller: searchController,
               decoration: InputDecoration(
@@ -110,6 +113,8 @@ class _QuotePageState extends State<QuotePage> {
               child: Text("Search"),
             ),
             SizedBox(height: 20),
+            */
+
             if (isLoading) CircularProgressIndicator(),
             Expanded(
               child: ListView.builder(
