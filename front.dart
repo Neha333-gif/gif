@@ -17,6 +17,7 @@ class FrontPage extends StatelessWidget {
 
 
 
+
 class QuotePage extends StatefulWidget {
   @override
   _QuotePageState createState() => _QuotePageState();
