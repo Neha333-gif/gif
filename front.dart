@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class FrontPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: QuotePage(),
+    return Scaffold(
+      appBar: AppBar(title: Text("Quotes App")),
+      body: Center(
+        child: Text(
+          "Hello World",
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
     );
   }
 }
+
 
 class QuotePage extends StatefulWidget {
   @override
