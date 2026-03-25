@@ -4,9 +4,10 @@ import 'front.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: FrontPage(),   
+    home: QuotePage(),   // not FrontPage
   ));
 }
+
 
 
 class MyApp extends StatelessWidget {
