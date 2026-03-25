@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;   
-import 'dart:convert';                     
+import 'package:http/http.dart' as http;   // ✅ for http requests
+import 'dart:convert';                     // ✅ for jsonEncode/jsonDecode
 
+/// Simple landing page
 class FrontPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Quotes App")),
       body: Center(
-        child: Text(
-          "Hello World",
-          style: TextStyle(fontSize: 24),
+        child: ElevatedButton(
+          child: Text("Go to Quote Generator"),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => QuotePage()),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-
+/// Quote generator and search page
 class QuotePage extends StatefulWidget {
   @override
   _QuotePageState createState() => _QuotePageState();
@@ -28,61 +34,47 @@ class _QuotePageState extends State<QuotePage> {
   List quotes = [];
   bool isLoading = false;
 
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
-  String baseUrl = "http://127.0.0.1:8000"; // ✅ correct for Chrome
+  // ⚠️ For local testing use localhost, but for web builds replace with a hosted API
+  String baseUrl = "http://127.0.0.1:8000";
 
   Future<void> generateQuotes() async {
     setState(() => isLoading = true);
-
     try {
-      var res = await http.post(
+      final res = await http.post(
         Uri.parse("$baseUrl/generate"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"topic": selectedTopic}),
       );
-
-      var data = jsonDecode(res.body);
-
-      setState(() {
-        quotes = data["quotes"] ?? [];
-      });
+      final data = jsonDecode(res.body);
+      setState(() => quotes = data["quotes"] ?? []);
     } catch (e) {
-      print(e);
+      print("Error generating quotes: $e");
     }
-
     setState(() => isLoading = false);
   }
 
   Future<void> searchQuotes() async {
     setState(() => isLoading = true);
-
     try {
-      var res = await http.post(
+      final res = await http.post(
         Uri.parse("$baseUrl/search"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"query": searchController.text}),
       );
-
-      var data = jsonDecode(res.body);
-
-      setState(() {
-        quotes = data["quotes"] ?? [];
-      });
+      final data = jsonDecode(res.body);
+      setState(() => quotes = data["quotes"] ?? []);
     } catch (e) {
-      print(e);
+      print("Error searching quotes: $e");
     }
-
     setState(() => isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Quote Generator"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text("Quote Generator"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -96,9 +88,7 @@ class _QuotePageState extends State<QuotePage> {
                         child: Text(topic.toUpperCase()),
                       ))
                   .toList(),
-              onChanged: (value) {
-                setState(() => selectedTopic = value!);
-              },
+              onChanged: (value) => setState(() => selectedTopic = value!),
             ),
             SizedBox(height: 10),
             ElevatedButton(
@@ -136,7 +126,7 @@ class _QuotePageState extends State<QuotePage> {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
