@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;   
-import 'dart:convert';                     
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-
-class FrontPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Quotes App")),
-      body: Center(
-        child: Text(
-          "Hello World",
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  }
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: QuotePage(),  
+  ));
 }
-
-
-
 
 class QuotePage extends StatefulWidget {
   @override
@@ -31,62 +19,31 @@ class _QuotePageState extends State<QuotePage> {
   List quotes = [];
   bool isLoading = false;
 
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
-  String baseUrl = "http://127.0.0.1:8000"; // ✅ correct for Chrome
+  // ⚠️ Replace with your actual hosted backend URL
+  String baseUrl = "https://your-server.com";
 
   Future<void> generateQuotes() async {
     setState(() => isLoading = true);
-
     try {
-      var res = await http.post(
+      final res = await http.post(
         Uri.parse("$baseUrl/generate"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"topic": selectedTopic}),
       );
-
-      var data = jsonDecode(res.body);
-
-      setState(() {
-        quotes = data["quotes"] ?? [];
-      });
+      final data = jsonDecode(res.body);
+      setState(() => quotes = data["quotes"] ?? []);
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
-
     setState(() => isLoading = false);
   }
-
-// 
-//   Future<void> searchQuotes() async {
-//     setState(() => isLoading = true);
-
-//     try {
-//       var res = await http.post(
-//         Uri.parse("$baseUrl/search"),
-//         headers: {"Content-Type": "application/json"},
-//         body: jsonEncode({"query": searchController.text}),
-//       );
-
-//       var data = jsonDecode(res.body);
-
-//       setState(() {
-//         quotes = data["quotes"] ?? [];
-//       });
-//     } catch (e) {
-//       print(e);
-//     }
-
-//     setState(() => isLoading = false);
-//   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Quote Generator"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text("Quote Generator"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -100,9 +57,7 @@ class _QuotePageState extends State<QuotePage> {
                         child: Text(topic.toUpperCase()),
                       ))
                   .toList(),
-              onChanged: (value) {
-                setState(() => selectedTopic = value!);
-              },
+              onChanged: (value) => setState(() => selectedTopic = value!),
             ),
             SizedBox(height: 10),
             ElevatedButton(
@@ -110,38 +65,26 @@ class _QuotePageState extends State<QuotePage> {
               child: Text("Generate Quotes"),
             ),
             SizedBox(height: 20),
-
-            // TextField(
-            //   controller: searchController,
-            //   decoration: InputDecoration(
-            //     labelText: "Search quotes",
-            //     border: OutlineInputBorder(),
-            //   ),
-            // ),
-            // SizedBox(height: 10),
-            // ElevatedButton(
-            //   onPressed: searchQuotes,
-            //   child: Text("Search"),
-            // ),
-            SizedBox(height: 20),
             if (isLoading) CircularProgressIndicator(),
             Expanded(
-              child: ListView.builder(
-                itemCount: quotes.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        quotes[index],
-                        style: TextStyle(fontSize: 16),
-                      ),
+              child: quotes.isEmpty
+                  ? Center(child: Text("No quotes yet. Try generating one."))
+                  : ListView.builder(
+                      itemCount: quotes.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              quotes[index],
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            )
+            ),
           ],
         ),
       ),
