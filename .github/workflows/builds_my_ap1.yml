@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      // Checkout your repo
+      # Checkout your repo
       - name: Checkout source
         uses: actions/checkout@v4
 
